@@ -8,20 +8,23 @@ jobs:
   test:
     docker:
       - image: cimg/node:15.1
+    # See: https://circleci.com/product/features/resource-classes/
+    # medium is 2 CPU, 4GB Ram at 10 credits/min (3000 minutes a month)
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
           keys:
             - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
       - run:
-          name: install packages
+          name: Install Packages
           command: npm ci
       - save_cache:
           key: node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
           paths:
             - ~/.npm
       - run:
-          name: run tests
+          name: Run Tests
           command: npm run test
 
 # Invoke jobs via workflows
